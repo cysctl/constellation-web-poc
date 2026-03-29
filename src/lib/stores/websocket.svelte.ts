@@ -20,7 +20,21 @@ export class WebSocketStore {
             this.ws.onopen = () => {
                 this.isConnected = true;
                 this.isConnecting = false;
+                this.error = null;
                 console.log('WebSocket connected');
+            }
+
+            // connection failed
+            this.ws.onerror = () => {
+                this.error = 'Failed to connect to WebSocket';
+                this.isConnecting = false;
+                this.isConnected = false;
+            }
+
+            // connection closed
+            this.ws.onclose = () => {
+                this.isConnecting = false;
+                this.isConnected = false;
             }
 
             // I will handle the onmessage event later
@@ -38,6 +52,8 @@ export class WebSocketStore {
             this.ws.close();
         }
 
+        // reset state
+        this.isConnected = false;
         this.ws = null;
     }
 }
