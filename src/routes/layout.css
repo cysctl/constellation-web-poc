@@ -1,1 +1,87 @@
 @import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* light theme - default */
+@theme {
+	--color-background: lab(98.5% 0 0);
+	--color-foreground: lab(8% 0 0);
+	--color-card: lab(100% 0 0);
+	--color-card-foreground: lab(8% 0 0);
+	--color-primary: lab(12% 0 0);
+	--color-primary-foreground: lab(98.5% 0 0);
+	--color-secondary: lab(93% 0 0);
+	--color-muted: lab(94% 0 0);
+	--color-muted-foreground: lab(40% 0 0);
+	--color-border: lab(88% 0 0);
+	--color-ring: lab(12% 0 0);
+	--color-state-new: lab(40% 0 0);
+	--color-state-init: lab(50% 15 65);
+	--color-state-orbit: lab(38% -2 -55);
+	--color-state-run: lab(42% -50 40);
+	--color-state-safe: lab(52% 18 60);
+	--color-state-error: lab(40% 65 42);
+	--color-state-dead: lab(30% 42 22);
+}
+
+/* dark theme */
+.dark {
+	--color-background: lab(6% 0 0);
+	--color-foreground: lab(94.2% 0 0);
+	--color-card: lab(10% 0 0);
+	--color-card-foreground: lab(94.2% 0 0);
+	--color-primary: lab(94.2% 0 0);
+	--color-primary-foreground: lab(6% 0 0);
+	--color-secondary: lab(16% 0 0);
+	--color-muted: lab(16% 0 0);
+	--color-muted-foreground: lab(55% 0 0);
+	--color-border: lab(20% 0 0);
+	--color-ring: lab(35% 0 0);
+	--color-state-new: lab(70% 0 0);
+	--color-state-init: lab(82% 8 75);
+	--color-state-orbit: lab(72% -5 -55);
+	--color-state-run: lab(78% -50 45);
+	--color-state-safe: lab(78% 14 68);
+	--color-state-error: lab(65% 60 40);
+	--color-state-dead: lab(50% 45 25);
+}
+
+body {
+	@apply bg-background text-foreground font-sans;
+}
+
+/* scrollbar - light */
+.custom-scrollbar::-webkit-scrollbar {
+	width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+	background: rgba(0, 0, 0, 0.12);
+	border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+	background: rgba(0, 0, 0, 0.22);
+}
+
+.custom-scrollbar {
+	scrollbar-width: thin;
+	scrollbar-color: rgba(0, 0, 0, 0.12) transparent;
+}
+
+/* scrollbar — dark */
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+	background: rgba(241, 245, 249, 0.12);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+	background: rgba(241, 245, 249, 0.22);
+}
+
+.dark .custom-scrollbar {
+	scrollbar-color: rgba(241, 245, 249, 0.12) transparent;
+}
