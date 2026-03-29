@@ -1,3 +1,7 @@
-<header class="flex items-center justify-between py-2">
-	<h1>Header</h1>
+<script lang="ts">
+	import Logo from './logo.svelte';
+</script>
+
+<header class="flex items-center justify-between py-4">
+	<Logo />
 </header>
