@@ -1,5 +1,9 @@
 <script lang="ts">
-	let connStatus: 'connected' | 'disconnected' = 'connected';
+	import { wsStore } from '$lib/stores/websocket.svelte';
+
+	let connStatus: 'connected' | 'disconnected' = $derived(
+		wsStore.isConnected ? 'connected' : 'disconnected'
+	);
 </script>
 
 <div class="inline-flex items-center gap-2">
