@@ -23,7 +23,7 @@
 		<SatelliteTableItem
 			type="Sputnik"
 			name="Device1"
-			state="NEW"
+			satelliteState="NEW"
 			lastMessage="Last message content..."
 			heartbeat="3000ms"
 			lives={3}
