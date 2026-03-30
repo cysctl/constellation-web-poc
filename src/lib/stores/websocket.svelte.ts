@@ -42,13 +42,19 @@ export class WebSocketStore {
             this.ws.onmessage = (event) => {
                 const message = JSON.parse(event.data);
 
-                // I only get the initial data from the system. 
-                // The interface will not respond if a satellite is added or removed.
-                // I will fix this later.
+                // The first_snapshot data sent when the connection is first established is an object. 
+                // However, when a satellite is added or removed, the data sent is an array.
                 
-                // Add satellite data to store on first snapshot message
                 if (message.type === 'first_snapshot') {
                     satelliteStore.setAll(message.data);
+                } else if (Array.isArray(message)) {
+                    for (const event of message) {
+                        if (event.event === 'satellite_added') {
+                            satelliteStore.add(event.data);
+                        } else if (event.event === 'satellite_removed') {
+                            satelliteStore.remove(event.satellite.name);
+                        }
+                    }
                 }
             }
         } catch (error: any) {

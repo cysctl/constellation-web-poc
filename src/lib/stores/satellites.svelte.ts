@@ -12,6 +12,14 @@ class SatelliteStore {
         this.list = satellites;
     }
 
+    add(satellite: Satellite) {
+        this.list = [...this.list, satellite];
+    }
+
+    remove(name: string) {
+        this.list = this.list.filter(s => s.name !== name);
+    }
+
     clear() {
         this.list = [];
     }
