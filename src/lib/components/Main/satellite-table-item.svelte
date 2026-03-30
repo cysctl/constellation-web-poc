@@ -15,6 +15,10 @@
 	// The server does not send values like last message, heartbeat, or lives yet.
 	// I need to handle the server side first to replace these with real data.
 	// I will do this later.
+
+	// For now, The lastMessage is updated when a command response is received from the server.
+	// This commands are get_ prefixed functions such as get_name, get_version, etc.
+
 	let {
 		type,
 		name,

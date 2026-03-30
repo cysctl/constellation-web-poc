@@ -23,6 +23,7 @@
 				type={satellite.type}
 				name={satellite.name}
 				satelliteState={satellite.state}
+				lastMessage={satellite.lastMessage}
 			/>
 		{/each}
 	</tbody>

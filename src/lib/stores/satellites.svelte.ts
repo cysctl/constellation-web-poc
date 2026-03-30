@@ -3,6 +3,7 @@ export interface Satellite {
     type: string;
     state: string;
     last_changed: string;
+    lastMessage?: string;
 }
 
 class SatelliteStore {
@@ -18,6 +19,10 @@ class SatelliteStore {
 
     update(satellite: Satellite) {
         this.list = this.list.map(s => s.name === satellite.name ? satellite : s);
+    }
+
+    setLastMessage(name: string, message: string) {
+        this.list = this.list.map(s => s.name === name ? { ...s, lastMessage: message } : s);
     }
 
     remove(name: string) {
