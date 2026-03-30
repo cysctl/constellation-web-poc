@@ -6,13 +6,22 @@
 		type: string;
 		name: string;
 		satelliteState: string;
-		lastMessage: string;
-		heartbeat: string;
-		lives: number;
+		lastMessage?: string;
+		heartbeat?: string;
+		lives?: number;
 	}
 
-	let { type, name, satelliteState, lastMessage, heartbeat, lives }: SatelliteTableItemProps =
-		$props();
+	// The server does not send values like last message, heartbeat, or lives yet.
+	// I need to handle the server side first to replace these with real data.
+	// I will do this later.
+	let {
+		type,
+		name,
+		satelliteState,
+		lastMessage = 'Last message content...',
+		heartbeat = '-',
+		lives = 0
+	}: SatelliteTableItemProps = $props();
 
 	let dropdown: DropdownMenu;
 

@@ -1,8 +1,6 @@
 <script lang="ts">
-	// This is a placeholder component for the satellite table
-	// It will be replaced with actual data and functionality later
-
 	import SatelliteTableItem from './satellite-table-item.svelte';
+	import { satelliteStore } from '$lib/stores/satellites.svelte';
 </script>
 
 <table class="mt-5 w-full caption-bottom text-sm whitespace-nowrap">
@@ -20,13 +18,12 @@
 		</tr>
 	</thead>
 	<tbody class="divide-y divide-border [&_td]:px-3 [&_td]:py-2">
-		<SatelliteTableItem
-			type="Sputnik"
-			name="Device1"
-			satelliteState="NEW"
-			lastMessage="Last message content..."
-			heartbeat="3000ms"
-			lives={3}
-		/>
+		{#each satelliteStore.list as satellite (satellite.name)}
+			<SatelliteTableItem
+				type={satellite.type}
+				name={satellite.name}
+				satelliteState={satellite.state}
+			/>
+		{/each}
 	</tbody>
 </table>

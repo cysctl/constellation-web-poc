@@ -1,3 +1,5 @@
+import { satelliteStore } from './satellites.svelte';
+
 export class WebSocketStore {
     ws = $state<WebSocket | null>(null);
     isConnected = $state<boolean>(false);
@@ -37,9 +39,17 @@ export class WebSocketStore {
                 this.isConnected = false;
             }
 
-            // I will handle the onmessage event later
-            this.ws.onmessage = event => {
+            this.ws.onmessage = (event) => {
+                const message = JSON.parse(event.data);
 
+                // I only get the initial data from the system. 
+                // The interface will not respond if a satellite is added or removed.
+                // I will fix this later.
+                
+                // Add satellite data to store on first snapshot message
+                if (message.type === 'first_snapshot') {
+                    satelliteStore.setAll(message.data);
+                }
             }
         } catch (error: any) {
             this.error = error || 'Failed to connect to WebSocket';
@@ -55,6 +65,7 @@ export class WebSocketStore {
         // reset state
         this.isConnected = false;
         this.ws = null;
+        satelliteStore.clear();
     }
 }
 
