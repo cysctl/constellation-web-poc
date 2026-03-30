@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Ellipsis } from '@lucide/svelte';
 	import DropdownMenu from '$lib/components/ui/dropdown-menu.svelte';
+	import { wsStore } from '$lib/stores/websocket.svelte';
 
 	interface SatelliteTableItemProps {
 		type: string;
@@ -76,5 +77,16 @@
 	deviceType={type}
 	deviceName={name}
 	items={actions}
-	onSelect={(item) => console.log(name, item)}
+	onSelect={(item) => {
+		const cmd = item.toLowerCase();
+		const target = `${type}.${name}`;
+
+		if (cmd === 'start') {
+			// RUN_001 is a placeholder run ID.
+			// Hardcoding this for now.
+			wsStore.sendCommand(cmd, target, 'RUN_001');
+		} else {
+			wsStore.sendCommand(cmd, target);
+		}
+	}}
 />

@@ -62,6 +62,21 @@ export class WebSocketStore {
         }
     }
 
+    sendCommand(cmd: string, target: string, payload?: string) {
+        if (!this.ws || !this.isConnected) return;
+
+        const message: Record<string, string> = {
+            type: 'send_command',
+            cmd: cmd.toLowerCase(),
+            target
+        };
+
+        if (payload !== undefined) {
+            message.payload = payload;
+        }
+
+        this.ws.send(JSON.stringify(message));
+    }
 
     disconnect() {
         if (this.ws) {
