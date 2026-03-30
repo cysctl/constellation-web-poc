@@ -44,13 +44,17 @@ export class WebSocketStore {
 
                 // The first_snapshot data sent when the connection is first established is an object. 
                 // However, when a satellite is added or removed, the data sent is an array.
-                
+
                 if (message.type === 'first_snapshot') {
                     satelliteStore.setAll(message.data);
                 } else if (Array.isArray(message)) {
+                    // I will handle the satellite_failed event later.
+                    
                     for (const event of message) {
                         if (event.event === 'satellite_added') {
                             satelliteStore.add(event.data);
+                        } else if (event.event === 'satellite_changed') {
+                            satelliteStore.update(event.satellite);
                         } else if (event.event === 'satellite_removed') {
                             satelliteStore.remove(event.satellite.name);
                         }
