@@ -61,6 +61,7 @@ async def handler(ws):
                     
                     response_msg = json.dumps({
                         "type": "command_response",
+                        "cmd": cmd,
                         "from": target,
                         "data": result
                     }, default=str)

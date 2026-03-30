@@ -48,8 +48,10 @@ export class WebSocketStore {
                 if (message.type === 'first_snapshot') {
                     satelliteStore.setAll(message.data);
                 } else if (message.type === 'command_response') {
-                    const name = message.from.split('.')[1];
-                    satelliteStore.setLastMessage(name, message.data.message);
+                    if (message.cmd.startsWith('get_')) {
+                        const name = message.from.split('.')[1];
+                        satelliteStore.setLastMessage(name, message.data.message);
+                    }
                 } else if (Array.isArray(message)) {
                     // I will handle the satellite_failed event later.
                     
