@@ -1,3 +1,5 @@
+import { satelliteStore } from './satellites.svelte';
+
 export class WebSocketStore {
     ws = $state<WebSocket | null>(null);
     isConnected = $state<boolean>(false);
@@ -37,15 +39,53 @@ export class WebSocketStore {
                 this.isConnected = false;
             }
 
-            // I will handle the onmessage event later
-            this.ws.onmessage = event => {
+            this.ws.onmessage = (event) => {
+                const message = JSON.parse(event.data);
 
+                // The first_snapshot data sent when the connection is first established is an object. 
+                // However, when a satellite is added or removed, the data sent is an array.
+
+                if (message.type === 'first_snapshot') {
+                    satelliteStore.setAll(message.data);
+                } else if (message.type === 'command_response') {
+                    if (message.cmd.startsWith('get_')) {
+                        const name = message.from.split('.')[1];
+                        satelliteStore.setLastMessage(name, message.data.message);
+                    }
+                } else if (Array.isArray(message)) {
+                    // I will handle the satellite_failed event later.
+                    
+                    for (const event of message) {
+                        if (event.event === 'satellite_added') {
+                            satelliteStore.add(event.data);
+                        } else if (event.event === 'satellite_changed') {
+                            satelliteStore.update(event.satellite);
+                        } else if (event.event === 'satellite_removed') {
+                            satelliteStore.remove(event.satellite.name);
+                        }
+                    }
+                }
             }
         } catch (error: any) {
             this.error = error || 'Failed to connect to WebSocket';
         }
     }
 
+    sendCommand(cmd: string, target: string, payload?: string) {
+        if (!this.ws || !this.isConnected) return;
+
+        const message: Record<string, string> = {
+            type: 'send_command',
+            cmd: cmd.toLowerCase(),
+            target
+        };
+
+        if (payload !== undefined) {
+            message.payload = payload;
+        }
+
+        this.ws.send(JSON.stringify(message));
+    }
 
     disconnect() {
         if (this.ws) {
@@ -55,6 +95,7 @@ export class WebSocketStore {
         // reset state
         this.isConnected = false;
         this.ws = null;
+        satelliteStore.clear();
     }
 }
 

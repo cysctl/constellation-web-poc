@@ -1,18 +1,32 @@
 <script lang="ts">
 	import { Ellipsis } from '@lucide/svelte';
 	import DropdownMenu from '$lib/components/ui/dropdown-menu.svelte';
+	import { wsStore } from '$lib/stores/websocket.svelte';
 
 	interface SatelliteTableItemProps {
 		type: string;
 		name: string;
 		satelliteState: string;
-		lastMessage: string;
-		heartbeat: string;
-		lives: number;
+		lastMessage?: string;
+		heartbeat?: string;
+		lives?: number;
 	}
 
-	let { type, name, satelliteState, lastMessage, heartbeat, lives }: SatelliteTableItemProps =
-		$props();
+	// The server does not send values like last message, heartbeat, or lives yet.
+	// I need to handle the server side first to replace these with real data.
+	// I will do this later.
+
+	// For now, The lastMessage is updated when a command response is received from the server.
+	// This commands are get_ prefixed functions such as get_name, get_version, etc.
+
+	let {
+		type,
+		name,
+		satelliteState,
+		lastMessage = 'Last message content...',
+		heartbeat = '-',
+		lives = 0
+	}: SatelliteTableItemProps = $props();
 
 	let dropdown: DropdownMenu;
 
@@ -67,5 +81,16 @@
 	deviceType={type}
 	deviceName={name}
 	items={actions}
-	onSelect={(item) => console.log(name, item)}
+	onSelect={(item) => {
+		const cmd = item.toLowerCase();
+		const target = `${type}.${name}`;
+
+		if (cmd === 'start') {
+			// RUN_001 is a placeholder run ID.
+			// Hardcoding this for now.
+			wsStore.sendCommand(cmd, target, 'RUN_001');
+		} else {
+			wsStore.sendCommand(cmd, target);
+		}
+	}}
 />
