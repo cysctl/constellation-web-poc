@@ -3,7 +3,7 @@
 	import { satelliteStore } from '$lib/stores/satellites.svelte';
 </script>
 
-<table class="mt-5 w-full caption-bottom text-sm whitespace-nowrap">
+<table class="mt-7 w-full caption-bottom text-sm whitespace-nowrap">
 	<thead class="border-b border-border">
 		<tr
 			class="text-left text-xs font-medium tracking-wider text-muted-foreground uppercase [&_th]:px-3 [&_th]:py-2"
