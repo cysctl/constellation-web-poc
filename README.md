@@ -306,7 +306,7 @@ Install dependencies and start the server:
 
 ```bash
 pip install -r requirements.txt
-python server.py
+python ws.py
 ```
 
 The server will start listening on the local network.
