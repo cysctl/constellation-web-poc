@@ -19,11 +19,12 @@ class MyController(ScriptableController):
         failed_satellite_names = set(self.get_failed())
 
         for canonical_name, sat in satellites.items():
+            if canonical_name in failed_satellite_names:
+                continue
+
             state = hb_states.get(canonical_name, "-")
             state_str = state.name if hasattr(state, "name") else str(state)
 
-            if canonical_name in failed_satellite_names:
-                state_str = "DEAD"
 
             snapshot[canonical_name] = {
                 "name": sat._name,
