@@ -100,6 +100,8 @@ Here is a quick summary of what these functions do:
 
 - **`send_command()`**: The function needed to send a command with parameters to a specific satellite (e.g., `Sputnik.Device1`).
 
+  > **Note on Payload Data:** In the current structure of this PoC, the `payload` data is temporarily hardcoded. For example, when the `start` command is triggered, a special fixed payload named `RUN_001` is sent along with the command. This hardcoded approach is actually wrong. This structural issue will be fixed during the main project development.
+
 - **`get_satellite_details()` & `get_all_satellites()`**: These functions retrieve data for a specific satellite or all satellites from the latest snapshot.
 
 ### WebSocket Server
@@ -147,6 +149,126 @@ async def broadcast_events():
 ```
 
 In summary, instead of dangerously sending data directly over the network, background operations leave the data in this designated queue using a safe transfer method. The asynchronous WebSocket server then takes the data from the queue when it is its turn and smoothly broadcasts it to the clients.
+
+### WebSocket Communication Data Structures
+
+The communication between the frontend client and the Python WebSocket server is structured using standard JSON formats. Below are the specific payload structures used for different operations.
+
+#### Client to Server (Sending Commands)
+
+When the user triggers an action from the web interface, the client sends a message with the `send_command` type. It contains the target satellite, the command to execute, and an optional payload.
+
+For most commands (like `initialize`), no explicit payload is sent (handled as `{}` in the background):
+
+```json
+{
+	"type": "send_command",
+	"cmd": "<command>",
+	"target": "<satellite_type>.<satellite_name>"
+}
+```
+
+However, as a specific case for this PoC, triggering the `start` command automatically includes a hardcoded payload:
+
+```json
+{
+	"type": "send_command",
+	"cmd": "start",
+	"target": "<satellite_type>.<satellite_name>",
+	"payload": "RUN_001"
+}
+```
+
+#### Server to Client (Receiving Data)
+
+The server sends three distinct types of messages back to the client:
+
+**Initial Snapshot (`first_snapshot`):**
+Sent immediately when a new client connects to the WebSocket. It contains the current state of all known satellites in the network as an array.
+
+```json
+{
+	"type": "first_snapshot",
+	"data": [
+		{
+			"name": "<satellite_name>",
+			"type": "<satellite_type>",
+			"state": "<current_state>",
+			"last_changed": "<timestamp>"
+		}
+	]
+}
+```
+
+**Command Responses (`command_response`):**
+When a client sends a specific command (such as `initialize`), the server processes it asynchronously and directly replies with the result.
+
+```json
+{
+	"type": "command_response",
+	"cmd": "<command_name>",
+	"from": "<satellite_type>.<satellite_name>",
+	"data": {
+		"success": "<boolean>",
+		"message": "<response_message>",
+		"payload": "<payload_data_or_null>",
+		"meta": {},
+		"error": "<error_message>"
+	}
+}
+```
+
+**Live State Updates:**
+When the `MyController` detects state changes in the Constellation network, it broadcasts an array of events to all connected clients.
+
+_Example: When a new satellite is added:_
+
+```json
+[
+	{
+		"event": "satellite_added",
+		"data": {
+			"name": "<satellite_name>",
+			"type": "<satellite_type>",
+			"state": "<initial_state>", // NEW
+			"last_changed": "<timestamp>"
+		}
+	}
+]
+```
+
+_Example: When a satellite state changes:_
+
+```json
+[
+	{
+		"event": "satellite_changed",
+		"satellite": {
+			"name": "<satellite_name>",
+			"type": "<satellite_type>",
+			"state": "<new_state>",
+			"last_changed": "<timestamp>"
+		},
+		"previous_state": "<old_state>"
+	}
+]
+```
+
+_Example: When a satellite is removed:_
+
+```json
+[
+	{
+		"event": "satellite_removed",
+		"satellite": {
+			"name": "<satellite_name>",
+			"type": "<satellite_type>",
+			"state": "<final_state>",
+			"last_changed": "<timestamp>"
+		}
+	}
+]
+```
 
 ## Usage
 
