@@ -148,6 +148,69 @@ async def broadcast_events():
 
 In summary, instead of dangerously sending data directly over the network, background operations leave the data in this designated queue using a safe transfer method. The asynchronous WebSocket server then takes the data from the queue when it is its turn and smoothly broadcasts it to the clients.
 
+## Usage
+
+To run the project fully, both the frontend (Svelte) and backend (Python WebSocket server) must run at the same time.
+
+Requirements:
+
+- Node.js
+- Python
+- Git
+
+### Clone the Project
+
+```bash
+git clone https://github.com/cysctl/constellation-web-poc.git
+cd constellation-web-poc
+```
+
+### Backend Setup
+
+Go to the "server" folder:
+
+```bash
+cd server
+```
+
+It is recommended to use a virtual environment:
+
+```bash
+python -m venv venv
+source venv/bin/activate # Linux
+```
+
+Install dependencies and start the server:
+
+```bash
+pip install -r requirements.txt
+python server.py
+```
+
+The server will start listening on the local network.
+
+### Frontend Setup
+
+Open a new terminal and stay in the root directory. Install dependencies and start the development server:
+
+```bash
+npm install
+npm run dev
+```
+
+If port 5173 is available, the app will run at:
+
+[http://localhost:5173](http://localhost:5173)
+
+Open this address in your browser and enter WebSocket settings from the top-right menu to start using the system. The application uses a Constellation group called `test`. You can change this by updating the following code block in the ws.py file:
+
+```python
+ctrl = MyController(
+    group="test", # Constellation group
+    on_update=push_events
+)
+```
+
 ## AI Usage Policy
 
 AI assistants were utilized in the preparation of this README file and during the development of the front-end.
